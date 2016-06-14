@@ -1,0 +1,14 @@
+body{background: url(../images/background.jpg) center no-repeat; position: relative;font-family: "Helvetica Neue",Helvetica,"Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;}
+/*main*/
+#login_box{width: 390px;height: 315px;position:absolute;left:50%;margin-left:-195px;top:50%;margin-top:-157.5px;}
+#login_box .user_tab{overflow: hidden;margin-bottom: 60px;}
+#login_box .user_tab>div{float: left;width: 83px;text-align: center;color: #eae8e8;padding-bottom: 10px;font-size: 24px;}
+#login_box .user_tab>div.on{border-bottom: 2px solid #fff;color: #fff;}
+#login_box .user_tab>div:nth-child(1){margin-left: 84px;}
+#login_box .user_tab>div:nth-child(2){margin-left: 46px;}
+#login_box input{margin-bottom: 24px;width: 100%; height: 50px; line-height: 50px; border: none;border-radius: 5px;font-size: 18px; padding-left: 19px;background-color: rgba(234, 232, 232,0.5);color: #fff;outline: none;}
+::-webkit-input-placeholder { color: #fff; font-family: "Microsoft Yahei";font-size: 18px;}
+:-moz-placeholder { color: #fff; font-family: "Microsoft Yahei";font-size: 18px;}
+::-moz-placeholder { color: #fff; font-family: "Microsoft Yahei";font-size: 18px;}
+:-ms-input-placeholder { color: #fff; font-family: "Microsoft Yahei";font-size: 18px;}
+#login_box>input.login{background-color: #379a24;font-family: "Microsoft Yahei";margin: 16px 0 0 0; padding: 0;}
