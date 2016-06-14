@@ -559,8 +559,8 @@
                                 </div>
                             </a>
                         </div>
-                        <div class="content">
-                            <pre id="editArea" class="flex edit_area " contenteditable="true"></pre>
+                        <div id="contentArea" class="content">
+                            <pre id="editArea" class="flex edit_area" contenteditable="true"></pre>
                             <span class="caret_pos_helper" id="caretPosHelper"></span>
                         </div>
 
@@ -585,7 +585,7 @@
 <script>
     $(function(){
         $('.scroll-content').slimScroll({height: '100%'});
-//        $('#editArea').slimScroll();
+        $('#contentArea').slimScroll({height: '100%'});
     })
 </script>
 </html>

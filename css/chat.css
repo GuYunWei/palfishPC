@@ -61,8 +61,10 @@ a.btn { text-decoration: none }
 .chat .box_bd { bottom: 180px; padding: 0 19px; overflow-y: auto; overflow-x: hidden }
 .chat .box_ft { height: 180px; margin-right: 19px; border-top: 1px solid #d6d6d6 }
 .chat .box_ft .toolbar { height: 30px; padding: 5px 17px }
-.chat .box_ft .content .flex { height: 6em; overflow-y: auto; overflow-x: hidden; padding-left: 20px; outline: 0; border: 0; font-size: 14px }
+.chat .box_ft .content{ max-height:6em; }
+.chat .box_ft .content .flex { min-height: 6em; overflow: hidden; padding-left: 20px; outline: 0; border: 0; font-size: 14px }
 .chat .box_ft .content .flex * { background: transparent!important; font-size: 14px!important; line-height: inherit!important;margin: 0!important;padding: 0!important;color: #000!important;}
+/*.chat .box_ft .content #editArea { width: 100%; outline: none; overflow-y: scroll!; overflow-x: hidden}*/
 .chat .box_ft .content img { vertical-align: middle }
 .chat .box_ft .content input { border: 0; outline: 0; line-height: inherit; background-color: transparent; color: inherit; font-family: inherit }
 .chat .box_ft .action { text-align: right; margin-top: 5px }
