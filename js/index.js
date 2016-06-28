@@ -8,12 +8,17 @@ $(function(){
 	.on("click", "#imgPreview a#prev", imgPrev)
 	.on("click", "#imgPreview a#next", imgNext)
 	.on("click", "#imgPreview a#download", saveImg)
+	.on("click", ".bubble .voice", function(){ playVoice(this);})
 	.on("click", ".img_preview_close", function () {
 			$("#imgPreview").addClass("hide");
 			$("#imgContainer img").remove();
 	});
-
 })
+
+function playVoice(that){
+	var wave = $(that).find("i");
+	$(wave).hasClass("palfish_voice_gray") ? $(wave).addClass("palfish_voice_gray_playing") : $(wave).addClass("palfish_voice_playing");
+}
 
 function imgPreview(that){
 	var src = $(that).data("src");
