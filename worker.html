@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Untitled Document</title>
+    <meta name="Author" content="" />
+  
+</head>
+
+<body>
+</body>
+<script src="js/jquery-2.1.1.min.js"></script>
+<script>
+    $(function(){
+        var worker = new Worker('js/worker.js');
+        worker.postMessage(0);
+        worker.addEventListener('message', function (ev) {
+            var user = JSON.parse(ev.data);
+            $("body").append("<div>"+user.ctype+"</div>")
+        })
+    })
+</script>
+</html>
