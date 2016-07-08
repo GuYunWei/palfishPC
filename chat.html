@@ -58,6 +58,26 @@
                                         </div>
                                     </div>
                                 </div>
+                                
+                                <div>
+                                    <div class="chat_item">
+                                        <div class="ext">
+                                            <p class="attr">12:10</p>
+                                            <p class="attr">
+                                                <i class="palfish_no-remind"></i>
+                                            </p>
+                                        </div>
+                                        <div class="avatar">
+                                            <img class="img" src="images/132.jpg" alt="">
+                                        </div>
+                                        <div class="info">
+                                            <h3 class="nickname"><span class="nickname_text">real__隔壁老顾</span></h3>
+                                            <p class="msg">
+                                                <span>test</span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -80,7 +100,8 @@
                     <!--BEGIN BD-->
                     <div class="scroll-wrapper box_bd">
                         <div class="box_bd scroll-content">
-                            <div>
+<!--
+                            <div> 
                                 <div class="top-placeholder" style="height: 0px;"></div>
                                 <div>
                                     <div class="clearfix">
@@ -223,12 +244,29 @@
                                                 <div class="content">
                                                     <div class="bubble js_message_bubble bubble_default left">
                                                         <div class="bubble_cont">
-                                                            <div class="picture">
-                                                                <img class="msg-img" src="images/Koala.jpg" data-src="images/Koala.jpg">
-                                                                <i class="arrow"></i>
-                                                                <p class="loading hide">
-                                                                    <img src="images/ico_loading.gif" alt="">
-                                                                </p>
+                                                            <div class="voice"style="width: 53.097px;">
+                                                                <i class="palfish_voice_gray"></i>
+                                                                <span class="duration">2''<i class="palfish_noread hide"></i></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="clearfix">
+                                        <div style="overflow: hidden;">
+                                            <div class="message me">
+                                                <p class="message_system"><span class="content">10:43</span></p>
+                                                <img class="avatar" src="images/132.jpg" title="real__隔壁老顾">
+                                                <div class="content">
+                                                    <div class="bubble js_message_bubble bubble_primary right">
+                                                    <div class="bubble_cont">
+                                                            <div class="voice" style="width: 51.06px;">
+                                                                <i class="palfish_voice_green"></i>
+                                                                <span class="duration">2''<i class="palfish_noread hide"></i></span>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -239,7 +277,8 @@
                                 </div>
                                 <div class="bottom-placeholder" style="height: 0px;"></div>
                             </div>
-                            <div id="prerender"></div>
+-->
+<!--                            <div id="prerender"></div>-->
                             <div class="message_empty hide">
                                 <i class="palfish_nomes_icon"></i>
                                 <p class="">暂时没有新消息</p>
@@ -298,6 +337,7 @@
                         <a id="download" href="javascript:" title="下载图片">
                             <i class="palfish_download"></i>&nbsp;
                         </a>
+                        <iframe src="" name="show"  style="width:0;height:0"></iframe>
                     </li>
                     <li id="toLeft" class="img_opr_item">
                         <a href="javascript:" title="旋转图片">
@@ -312,6 +352,10 @@
                 </ul>
             </div>
         </div>
+    </div>
+    <div style="position:absolute;top:0;left:0;width:0;height:0;">
+        <audio id="voiceMsgPlayer" class="voicePlayer" preload="metadata" src="" style="width: 0px; height: 0px;"></audio>
+        <!--<audio id="msgNoticePlayer" class="voicePlayer" preload="metadata" src="https://wx.qq.com/zh_CN/htmledition/v2/sound/msg.mp3" style="width: 0px; height: 0px;"></audio>-->
     </div>
 </body>
 <script src="js/jquery-2.1.1.min.js"></script>
@@ -332,36 +376,42 @@
         var worker = new Worker('js/worker.js');
         worker.postMessage([h_m, token]);
         worker.addEventListener('message', function (ev) {
-            var user = JSON.parse(ev.data);
-            updateUserList(user);
+            var data = JSON.parse(ev.data);
+            if(typeof data == 'number'){
+                var smsgid = sessionStorage.getItem("smsgid");
+                if(!smsgid || ev.data > smsgid){
+                    sessionStorage.setItem("smsgid", ev.data);
+                }
+            }else{
+                updateUserList(data);
+            }
         })
     })
     
     function updateUserList(user){
-//        console.log(user);
-        var uid = user.ctype == 1 ? (user.uid == h_m ? user.uid : user.touid) : user.sdialogid;
+        var uid = user.ctype == 1 ? (user.uid != h_m ? user.uid : user.touid) : user.sdialogid;
         var item = $("#userItem .chat_item[uid=" + uid + "]"), html = '';
-        if (item.length == 0) {
-            html += '' +
-                '<div class="chat_item" ctype=1 uid="' + uid + '" time="' + user.ct + '">' +
-                '<div class="ext">' +
-                '<p class="attr"></p>' +
-                '<p class="attr">' +
-                '<i class="palfish_no-remind"></i>' +
-                '</p>' +
-                '</div>' +
-                '<div class="avatar">' +
-                '<img class="img" src="' + user.avatar + '" alt="">' +
-                '</div>' +
-                '<div class="info">' +
-                '<h3 class="nickname"><span class="nickname_text">' + user.name + '</span></h3>' +
-                '<p class="msg">' +
-                '<span></span>' +
-                '</p>' +
-                '</div>' +
-                '</div>';
-            $('#userItem').prepend(html);
-        }
+        if(item.length > 0) return false;
+        html += '' +
+            '<div class="chat_item" ctype=1 uid="' + uid + '" time="' + user.ct + '">' +
+            '<div class="ext">' +
+            '<p class="attr"></p>' +
+            '<p class="attr">' +
+            '<i class=""></i>' +
+            '</p>' +
+            '</div>' +
+            '<div class="avatar">' +
+            '<img class="img" src="' + user.avatar + '" alt="">' +
+            '</div>' +
+            '<div class="info">' +
+            '<h3 class="nickname"><span class="nickname_text">' + user.name + '</span></h3>' +
+            '<p class="msg">' +
+            '<span></span>' +
+            '</p>' +
+            '</div>' +
+            '</div>';
+        $('#userItem').append(html);
+        $(".box_bd").append("<div class='chatItems' uid='" + uid + "'></div>")
     }
 </script>
 

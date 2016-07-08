@@ -4,16 +4,21 @@ $(function(){
 	.on("keydown", "#editArea", MessageTextOnKeyEnter)
 	.on("click", ".action>a.btn_send", sendMessage)
 
-	.on("click", ".message .picture>img", function(){imgPreview(this)})
+	.on("click", ".message .picture .msg-img", function(){imgPreview(this)})
 	.on("click", "#imgPreview a#prev", imgPrev)
 	.on("click", "#imgPreview a#next", imgNext)
-	.on("click", "#imgPreview a#download", saveImage)
+	.on("click", "#imgPreview a#download", saveImg)
+	.on("click", ".bubble .voice", function(){ playVoice(this);})
 	.on("click", ".img_preview_close", function () {
 			$("#imgPreview").addClass("hide");
 			$("#imgContainer img").remove();
 	});
-
 })
+
+function playVoice(that){
+	var wave = $(that).find("i");
+	$(wave).hasClass("palfish_voice_gray") ? $(wave).addClass("palfish_voice_gray_playing") : $(wave).addClass("palfish_voice_playing");
+}
 
 function imgPreview(that){
 	var src = $(that).data("src");
@@ -61,11 +66,54 @@ function imgNext(){
 	}
 }
 
-function saveImage() {
-	var address = $("#imgContainer>img").attr("src");
-	var a = $("<a>").attr("href", address).attr("download", address).appendTo("body");
-	a[0].click();
-	a.remove();
+function getimg() //另存为存放在服务器上图片到本地的方法
+{
+    event.returnValue=false;
+    show.window.location.href=$("#imgContainer>img").attr("src");
+    timer=setInterval(checkload,100)
+}
+
+function checkload()
+{
+    if(show.readyState!="complete")
+    {
+        //调用document.execCommand方法，'Saveas'表示打开文件另存为对话框命令
+        show.document.execCommand('SaveAs');
+        clearInterval(timer)
+    }
+}  
+
+function downLoadImage() {
+	var imagePathURL = $("#imgContainer>img").attr("src");
+		//如果中间IFRAME不存在，则添加 
+		if (!document.getElementById("_SAVEASIMAGE_TEMP_FRAME"))
+			$('<iframe style="display:none;" id="_SAVEASIMAGE_TEMP_FRAME" name="_SAVEASIMAGE_TEMP_FRAME" onload="_doSaveAsImage();" width="0"	height="0" src="about:blank" > </iframe>').appendTo("body"); 
+				if (document.all._SAVEASIMAGE_TEMP_FRAME.src != imagePathURL) {
+					//图片地址发生变化，加载图片 
+					document.all._SAVEASIMAGE_TEMP_FRAME.src = imagePathURL;
+				} else {
+					//图片地址没有变化，直接另存为 
+					_doSaveAsImage();
+				}
+			}
+
+		function _doSaveAsImage() {
+			if (document.all._SAVEASIMAGE_TEMP_FRAME.src != "about:blank")
+				document.frames("_SAVEASIMAGE_TEMP_FRAME").document.execCommand("SaveAs");
+		}
+
+function saveImg() {
+	if (document.all.a1 == null) {
+		objIframe = document.createElement("IFRAME");
+		document.body.insertBefore(objIframe);
+		objIframe.outerHTML = "<iframe name=a1 style='width:400px;hieght:300px' src=" + imageName.href + "></iframe>";
+		re = setTimeout("savepic()", 1)
+	} else {
+		clearTimeout(re)
+		pic = window.open(imageName.href, "a1")
+		pic.document.execCommand("SaveAs")
+		document.all.a1.removeNode(true)
+	}
 }
 
 function checkPos(imgs, current){
@@ -87,6 +135,26 @@ function userLogin(){
 		window.location.href = "./chat.html";
 	}
 
+}
+
+function MessageTextOnKeyEnter1(e) {
+    if (e.keyCode == 13) {
+        if (e.ctrlKey) {
+            var val = this.value;
+            if (typeof this.selectionStart == "number" && typeof this.selectionEnd == "number") {
+                var start = this.selectionStart;
+                this.value = val.slice(0, start) + "\n" + val.slice(this.selectionEnd);
+                this.selectionStart = this.selectionEnd = start + 1;
+            } else if (document.selection && document.selection.createRange) {
+                this.focus();
+                var range = document.selection.createRange();
+                range.text = "\r\n";
+                range.collapse(false);
+                range.select();
+            }
+        }
+        return false;
+    }
 }
 
 function MessageTextOnKeyEnter(e) {
