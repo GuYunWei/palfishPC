@@ -10,6 +10,22 @@
     <meta http-equiv="Expires" content="0">
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/chat.css">
+    <style>
+        .chat_item .avatar .icon {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            color: #FFF;
+            font-style: normal;
+            font-size: 12px;
+            text-align: center;
+            background: url(images/sprite.png) 0 -1780px;
+            width: 22px;
+            height: 19px;
+            vertical-align: middle;
+            display: inline-block;
+        }
+    </style>
 </head>
 
 <body>
@@ -402,6 +418,7 @@
             '</div>' +
             '<div class="avatar">' +
             '<img class="img" src="' + user.avatar + '" alt="">' +
+            '<i class="icon">4</i>' +
             '</div>' +
             '<div class="info">' +
             '<h3 class="nickname"><span class="nickname_text">' + user.name + '</span></h3>' +
