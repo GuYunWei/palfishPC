@@ -12,43 +12,43 @@ self.addEventListener('message', function(ev) {
 //根据历史消息生成左侧聊天栏
 function getMsgList(obj, h_m) {
     var request = new XMLHttpRequest();
-    request.open('POST', 'test.json', true);
-    request.onload = function() {
-        if (request.status >= 200 && request.status < 400) {
-            var data = JSON.parse(request.responseText);
-            var msgs = data.data.ent.msgs;
-            var users = data.data.ext.users;
-            self.postMessage(msgs[0].smsgid);
-            msgs = unique(msgs, h_m);
-            for (var i = 0; i < msgs.length; i++) {
-                var msg = msgs[i];
-                if ((msg.ctype == 1) && (msg.mtype == 1 || msg.mtype == 2 || msg.mtype == 3)) {
-                    var uid = msg.uid != h_m ? msg.uid : msg.touid;
-                    var userInfo = getUserInfo(uid, users);
-                    var obj = extend({}, userInfo, msg);
-                    self.postMessage(JSON.stringify(obj));
-                } else
-                if ((msg.ctype == 2 || msg.ctype == 11) && (msg.mtype == 1 || msg.mtype == 2 || msg.mtype == 3)) {
-                    var guid = msg.sdialogid;
-                    var sobj = {
-                        sdialogid: guid
-                    };
-                    getGroupInfo(sobj, msg);
+    if (request != null) {
+        request.onreadystatechange = function() {
+            if (request.readyState == 4) {
+                if (request.status == 200) {
+                    var data = JSON.parse(request.responseText);
+                    var msgs = data.data.ent.msgs, users = data.data.ext.users;
+                    self.postMessage(msgs[0].smsgid);
+                    msgs = unique(msgs, h_m);
+                    for (var i = 0; i < msgs.length; i++) {
+                        var msg = msgs[i];
+                        if ((msg.ctype == 1) && (msg.mtype == 1 || msg.mtype == 2 || msg.mtype == 3)) {
+                            var uid = msg.uid != h_m ? msg.uid : msg.touid;
+                            var info = extend({}, getUserInfo(uid, users), msg);
+                            self.postMessage(JSON.stringify(info));
+                        } else
+                        if ((msg.ctype == 2 || msg.ctype == 11) && (msg.mtype == 1 || msg.mtype == 2 || msg.mtype == 3)) {
+                            getGroupInfo({ 'sdialogid' : msg.sdialogid }, msg);
+                        }
+                    }
+                } else {
+                    console.log("Problem retrieving data");
                 }
+                // if (data.data.ent.more) {
+                //   var g_obj={
+                //       token: "85fb70418b53730020dd30714c866fb3",
+                //       sbmsgid: data.data.ent.sbmsgid,
+                //       beenget: msgs.length,
+                //       h_m: 107105,
+                //       smax_msgid:'0'
+                //   }
+                //   getMsgList(g_obj);
+                // } 
             }
-//            if (data.data.ent.more) {
-//                var g_obj={
-//                    token: "85fb70418b53730020dd30714c866fb3",
-//                    sbmsgid: data.data.ent.sbmsgid,
-//                    beenget: msgs.length,
-//                    h_m: 107105,
-//                    smax_msgid:'0'
-//                }
-//                getMsgList(g_obj)
-//            } 
-        } else {}
-    };
-    request.send(JSON.stringify(obj));
+        };
+        request.open("POST", 'test.json', true);
+        request.send(JSON.stringify(obj));
+    }
 }
 //根据用户id获取对应的信息
 function getUserInfo(id, users) {
@@ -65,8 +65,7 @@ function getUserInfo(id, users) {
 var extend = function(out) {
     out = out || {};
     for (var i = 1; i < arguments.length; i++) {
-        if (!arguments[i])
-            continue;
+        if (!arguments[i])  continue;
         for (var key in arguments[i]) {
             if (arguments[i].hasOwnProperty(key))
                 out[key] = arguments[i][key];
@@ -76,8 +75,7 @@ var extend = function(out) {
 };
 //对msgs数组进行筛选(ctype=1/2/11&&mtype=1/2/3)并去重
 var unique = function(msgs, h_m) {
-    var res = [];
-    var json = {};
+    var res = [], json = {};
     for (var i = 0; i < msgs.length; i++) {
         var ele = msgs[i];
         if ((ele.ctype == 1) && (ele.mtype == 1 || ele.mtype == 2 || ele.mtype == 3) || (ele.ctype == 2 || ele.ctype == 11) && (ele.mtype == 1 || ele.mtype == 2 || ele.mtype == 3)) {
@@ -98,11 +96,7 @@ function getGroupInfo(data, msg) {
             if (xmlhttp.readyState == 4) {
                 if (xmlhttp.status == 200) {
                     var data = JSON.parse(xmlhttp.responseText);
-                    var gdata = data.data;
-                    var ginfo = gdata.info;
-                    var gobj = extend({}, ginfo, msg, {
-                        dialogid: gdata.dialogid
-                    });
+                    var gobj = extend({}, data.data.info, msg, { 'dialogid' : data.data.dialogid });
                     self.postMessage(JSON.stringify(gobj));
                 } else {
                     console.log("Problem retrieving data");
